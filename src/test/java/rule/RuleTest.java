@@ -33,7 +33,7 @@ public class RuleTest {
         );
 
         final Node node = new Sigmoid().setWeightValues(randomWeight);
-        final Rule rule = new DeltaSGD(alpha, node, expectErrorLevel);  // SGS 학습 방식을 사용한다.
+        final Rule rule = new DeltaSGD(alpha, node, expectErrorLevel);  // SGD 학습 방식을 사용한다.
 
         final LearningDataSet dataSet = new LearningDataSet()
                 .add(LearningData.create(0d, Arrays.asList(new Double[]{0d, 0d, 1d})))
@@ -57,7 +57,7 @@ public class RuleTest {
         );
 
         final Node node = new Sigmoid().setWeightValues(randomWeight);
-        final Rule rule = new DeltaBatch(alpha, node, expectErrorLevel);
+        final Rule rule = new DeltaBatch(alpha, node, expectErrorLevel);    // Batch 학습 방법을 사용한다.
 
         final LearningDataSet dataSet = new LearningDataSet()
                 .add(LearningData.create(0d, Arrays.asList(new Double[]{0d, 0d, 1d})))
