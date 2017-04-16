@@ -6,8 +6,6 @@ import node.Node;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -49,23 +47,27 @@ public class DeltaBatch extends Rule {
                     .map(x -> 0d)
                     .collect(Collectors.toList());
 
+            lastError = 0d;
             for (final LearningData<Double> inputX : dataSet.list()) {
 
                 final Double expectD = inputX.getExpect();
                 final Double resultY = node.setInputValues(inputX.getInputList()).calc();
 
-                lastError = expectD - resultY;
+                final Double error = expectD - resultY;
+                if(Math.abs(error) > Math.abs(lastError)) {
+                    lastError = error;
+                }
 
                 log.info(
                         "입력:" + inputX.getInputList() +
                         ", 정답:" + expectD +
                         ", 결과:" + resultY +
-                        ", 오차:" + lastError
+                        ", 오차:" + error
                 );
 
                 for (int i = 0; i < weightList.size(); i++) {
                     final Double weight = node.getWeight(i);
-                    final Double dW = getDeltaWeight(alpha, lastError, inputX.get(i));
+                    final Double dW = getDeltaWeight(alpha, error, inputX.get(i));
                     sumWeight.set(i, sumWeight.get(i) + weight + dW);
                 }
             }

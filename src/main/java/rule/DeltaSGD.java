@@ -43,18 +43,22 @@ public class DeltaSGD extends Rule {
 
         while (Math.abs(lastError) > expectErrorLevel && epoch < epochLimit) {
 
+            lastError = 0d;
             for (final LearningData<Double> data : dataSet.list()) {
 
                 final Double expectD = data.getExpect();
                 final Double resultY = node.setInputValues(data.getInputList()).calc();
+                final Double error = expectD - resultY;
 
-                lastError = expectD - resultY;
+                if(Math.abs(error) > Math.abs(lastError)) {
+                    lastError = error;
+                }
 
                 log.info(
                         "입력:" + data.getInputList() +
                         ", 정답:" + expectD +
                         ", 결과:" + resultY +
-                        ", 오차:" + lastError
+                        ", 오차:" + error
                 );
 
                 List<Double> newWeightList = new ArrayList<>(weightList.size());
@@ -62,10 +66,11 @@ public class DeltaSGD extends Rule {
                 for (int i = 0; i < weightList.size(); i++) {
                     final double weight = node.getWeight(i);
                     final double inputX = data.get(i);
-                    final double deltaW = getDeltaWeight(alpha, lastError, inputX);
+                    final double deltaW = getDeltaWeight(alpha, error, inputX);
                     newWeightList.add(weight + deltaW);
                 }
                 node.setWeightValues(newWeightList);
+                log.info("*** 가중치 갱신:" + newWeightList + "\n");
             }
             epoch += 1;
         }

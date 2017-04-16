@@ -51,13 +51,14 @@ public class RuleTest {
 
         final Double alpha = 0.9d;
         final Double expectErrorLevel = 0.01;
+        final Integer epochLimit = 10000;   // 끝없이 돌아갈 수 있으므로 limit 를 정해준다.
 
         final List<Double> randomWeight = Arrays.asList(
                 new Double[]{Math.random(), Math.random(), Math.random()}
         );
 
         final Node node = new Sigmoid().setWeightValues(randomWeight);
-        final Rule rule = new DeltaBatch(alpha, node, expectErrorLevel);    // Batch 학습 방법을 사용한다.
+        final Rule rule = new DeltaBatch(alpha, node, expectErrorLevel, epochLimit);    // Batch 학습 방법을 사용한다.
 
         final LearningDataSet dataSet = new LearningDataSet()
                 .add(LearningData.create(0d, Arrays.asList(new Double[]{0d, 0d, 1d})))

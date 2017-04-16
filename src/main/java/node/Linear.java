@@ -8,6 +8,6 @@ public class Linear extends Node {
 
     @Override
     public Double phi(final Double v) {
-        return v;
+        return v + bias;
     }
 }

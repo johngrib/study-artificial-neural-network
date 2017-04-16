@@ -14,10 +14,11 @@ public abstract class Node {
 
     protected List<Double> weightValueList = new ArrayList<Double>();
     protected List<Double> inputValueList = new ArrayList<Double>();
+    Double bias = 0d;
 
     public Double calc() {
         final Double v = MatrixUtils.simpleMultiply(inputValueList, weightValueList);
-        return phi(v);
+        return phi(v + bias);
     }
 
     abstract public Double phi(final Double v);
@@ -40,6 +41,14 @@ public abstract class Node {
         return this;
     }
 
+    public Node setBias(Double bias) {
+        this.bias = bias;
+        return this;
+    }
+
+    public Double getBias() {
+        return bias;
+    }
 
     @Override
     public String toString() {
