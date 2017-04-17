@@ -11,6 +11,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.Assert.*;
+import static org.hamcrest.CoreMatchers.*;
 
 /**
  * Created by johngrib on 2017. 4. 14..
@@ -94,5 +95,80 @@ public class RuleTest {
 
         // 위와 같은 데이터로는 원하는 오차 수준에 도달하지 못한다.
         assertFalse(rule.getLastErrorAbs() <= expectErrorLevel);
+    }
+
+    @Test
+    public void Delta_규칙의_한계_테스트1() {
+
+        final Double alpha = 0.9d;
+        final Double expectErrorLevel = 0.01;
+        final Integer epochLimit = 10000;   // 끝없이 돌아갈 수 있으므로 limit 를 정해준다.
+
+        final List<Double> randomWeight = Arrays.asList(
+                new Double[]{Math.random(), Math.random(), Math.random()}
+        );
+
+        final Node node = new Sigmoid().setWeightValues(randomWeight);
+        final Rule rule = new DeltaBatch(alpha, node, expectErrorLevel, epochLimit);    // Batch 학습 방법을 사용한다.
+
+        final LearningDataSet dataSet = new LearningDataSet()
+                .add(LearningData.create(0d, Arrays.asList(new Double[]{0d, 0d, 1d})))
+                .add(LearningData.create(1d, Arrays.asList(new Double[]{0d, 1d, 1d})))
+                .add(LearningData.create(1d, Arrays.asList(new Double[]{1d, 0d, 1d})))
+                .add(LearningData.create(1d, Arrays.asList(new Double[]{1d, 1d, 1d})));
+
+        rule.run(dataSet);
+
+        assertTrue(rule.getLastErrorAbs() <= expectErrorLevel);
+    }
+
+    @Test
+    public void Delta_규칙의_한계_테스트2() {
+
+        final Double alpha = 0.9d;
+        final Double expectErrorLevel = 0.01;
+        final Integer epochLimit = 10000;   // 끝없이 돌아갈 수 있으므로 limit 를 정해준다.
+
+        final List<Double> randomWeight = Arrays.asList(
+                new Double[]{Math.random(), Math.random(), Math.random()}
+        );
+
+        final Node node = new Sigmoid().setWeightValues(randomWeight);
+        final Rule rule = new DeltaBatch(alpha, node, expectErrorLevel, epochLimit);    // Batch 학습 방법을 사용한다.
+
+        final LearningDataSet dataSet = new LearningDataSet()
+                .add(LearningData.create(1d, Arrays.asList(new Double[]{0d, 0d, 1d})))
+                .add(LearningData.create(0d, Arrays.asList(new Double[]{0d, 1d, 1d})))
+                .add(LearningData.create(1d, Arrays.asList(new Double[]{1d, 0d, 1d})))
+                .add(LearningData.create(0d, Arrays.asList(new Double[]{1d, 1d, 1d})));
+
+        rule.run(dataSet);
+
+        assertTrue(rule.getLastErrorAbs() <= expectErrorLevel);
+    }
+
+    @Test
+    public void Delta_규칙의_한계_테스트3() {
+
+        final Double alpha = 0.9d;
+        final Double expectErrorLevel = 0.01;
+        final Integer epochLimit = 10000;   // 끝없이 돌아갈 수 있으므로 limit 를 정해준다.
+
+        final List<Double> randomWeight = Arrays.asList(
+                new Double[]{Math.random(), Math.random(), Math.random()}
+        );
+
+        final Node node = new Sigmoid().setWeightValues(randomWeight);
+        final Rule rule = new DeltaBatch(alpha, node, expectErrorLevel, epochLimit);    // Batch 학습 방법을 사용한다.
+
+        final LearningDataSet dataSet = new LearningDataSet()
+                .add(LearningData.create(1d, Arrays.asList(new Double[]{0d, 0d, 1d})))
+                .add(LearningData.create(0d, Arrays.asList(new Double[]{0d, 1d, 1d})))
+                .add(LearningData.create(1d, Arrays.asList(new Double[]{1d, 0d, 1d})))
+                .add(LearningData.create(0d, Arrays.asList(new Double[]{8d, 7d, 1d})));
+
+        rule.run(dataSet);
+
+        assertTrue(rule.getLastErrorAbs() <= expectErrorLevel);
     }
 }
